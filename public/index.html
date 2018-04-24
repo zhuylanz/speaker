@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Nuhula Speaker</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<audio controls><source id="source" src="" type="audio/mpeg"/>
+		Your browser does not support the audio element.
+	</audio>
+	<script>
+		$.ajax({
+			url: '/speak',
+			data: { attr: 'value' },
+			success: function(data) {
+				$('audio #source').attr('src', data);
+				$('audio').get(0).load();
+				$('audio').get(0).play();
+			}
+		});
+	</script>
+</body>
+</html>
