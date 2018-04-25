@@ -15,9 +15,10 @@ app.get('/', (req, res) => {
 
 app.get('/speak', (req, res) => {
 	let option = {
+		method: 'GET',
 		uri: 'https://code.responsivevoice.org/getvoice.php',
 		qs: {
-			t: 'tôi rất là bê đê',
+			t: req.query.text,
 			tl: 'vi',
 			sv: '',
 			vn: '',
@@ -36,7 +37,8 @@ app.get('/speak', (req, res) => {
 	}
 
 	rp(option).then(res1 => {
-		let audio_path = '/audio/audio-cde.mp3'
+		console.log('--text converted');
+		let audio_path = '/audio/audio-cde.mp3';
 		fs.writeFileSync(__dirname+'/public/'+audio_path, res1, 'binary');
 
 		res.send(audio_path);
