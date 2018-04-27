@@ -17,9 +17,11 @@
 				url: '/speak',
 				data: { text: text },
 				success: function(data) {
-					$('audio #source').attr('src', 'http://speaker.nuhula.website'+data);
-					$('audio').get(0).load();
-					$('audio').get(0).play();
+					$('audio #source').attr('src', data+'?dynamic='+Math.random());
+					setTimeout(() => {
+						$('audio').get(0).load();
+						$('audio').get(0).play();
+					}, 100);
 				}
 			});
 		}
