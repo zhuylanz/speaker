@@ -14,11 +14,11 @@ app.get('/', (req, res, next) => {
 	let session_id;
 	if (req.cookies.session) {
 		session_id = req.cookies.session;
-		console.log('--speaker-session[old]: ' + session_id);
+		console.log('>>speaker-session[old]: ' + session_id);
 	} else {
 		session_id = String(Math.random()).substr(2, 6);
 		res.cookie('session', session_id, {maxAge: 86400000});
-		console.log('--speaker-session: ' + session_id);
+		console.log('>>speaker-session: ' + session_id);
 	}
 	next();
 });

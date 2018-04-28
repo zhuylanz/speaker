@@ -7,7 +7,7 @@
 <body>
 	<textarea style="width: 500px; height: 300px; overflow: auto; margin: auto;"></textarea>
 	<input type="button" class="trigger" value="Speak" onclick="speakText()">
-	<audio controls><source id="source" src="" type="audio/mpeg"/>
+	<audio style="display: none;" controls><source id="source" src="" type="audio/mpeg"/>
 		Your browser does not support the audio element.
 	</audio>
 	<script>
@@ -25,6 +25,10 @@
 				}
 			});
 		}
+
+		$('audio').on('ended', function() {
+			alert('audio ended');
+		});
 	</script>
 </body>
 </html>
