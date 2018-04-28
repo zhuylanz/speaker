@@ -2,15 +2,25 @@ const express = require('express');
 const app = express()
 const http = require('http');
 const server = http.createServer(app);
+const cookieParser = require('cookie-parser');
 
 const rp = require('request-promise');
 const fs = require('fs');
 const path = require('path');
 
-app.use(express.static(__dirname+'/public'));
+app.use(cookieParser());
 
-app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
+app.get('/', (req, res, next) => {
+	let session_id;
+	if (req.cookies.session) {
+		session_id = req.cookies.session;
+		console.log('--speaker-session[old]: ' + session_id);
+	} else {
+		session_id = String(Math.random()).substr(2, 6);
+		res.cookie('session', session_id, {maxAge: 86400000});
+		console.log('--speaker-session: ' + session_id);
+	}
+	next();
 });
 
 app.get('/speak', (req, res) => {
@@ -49,4 +59,6 @@ app.get('/speak', (req, res) => {
 });
 
 //
+
+app.use(express.static(__dirname+'/public'));
 server.listen(8004, () => console.log('ok'));
