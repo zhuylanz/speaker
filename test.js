@@ -1,4 +1,5 @@
-let num = Math.random();
+let a = [];
 
-console.log(num);
-console.log(String(num).substr(2, 6));
+a.push(console.log('abc'));
+a.push(console.log('bcd'));
+console.log(a);

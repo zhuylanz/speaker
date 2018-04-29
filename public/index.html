@@ -7,28 +7,29 @@
 <body>
 	<textarea style="width: 500px; height: 300px; overflow: auto; margin: auto;"></textarea>
 	<input type="button" class="trigger" value="Speak" onclick="speakText()">
-	<audio style="display: none;" controls><source id="source" src="" type="audio/mpeg"/>
-		Your browser does not support the audio element.
-	</audio>
 	<script>
 		let speakText = function() {
 			let text = $('textarea').val();
 			$.ajax({
+				method: 'POST',
 				url: '/speak',
 				data: { text: text },
-				success: function(data) {
-					$('audio #source').attr('src', data+'?dynamic='+Math.random());
+				success: async function(data) {
+					console.log(data);
+					for (var i in data) {
+						$('body').append('<audio style="display: none;" controls><source id="source" src="'+data[i]+'?dynamic='+Math.random()+'" type="audio/mpeg"/></audio>');
+					}
+					$('audio').on('ended', function() {
+						alert(this);
+						console.log(this);
+					});
 					setTimeout(() => {
-						$('audio').get(0).load();
 						$('audio').get(0).play();
 					}, 500);
 				}
 			});
 		}
 
-		$('audio').on('ended', function() {
-			alert('audio ended');
-		});
 	</script>
 </body>
 </html>
