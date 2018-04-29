@@ -83,7 +83,7 @@ app.post('/speak', (req, res) => {
 		for (var i in res_arr) {
 			console.log('--text converted');
 			let audio_path = '/audio/'+session_id+'_'+i+'.mp3';
-			fs.writeFileSync(__dirname+'/public/'+audio_path, res_arr[i], 'binary');
+			fs.writeFileSync(__dirname+'/public'+audio_path, res_arr[i], 'binary');
 			audio_path_arr.push(audio_path);
 		}
 		res.send(audio_path_arr);
