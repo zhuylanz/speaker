@@ -16,12 +16,14 @@
 				data: { text: text },
 				success: async function(data) {
 					console.log(data);
+					$('audio').remove();
 					for (var i in data) {
-						$('body').append('<audio style="display: none;" controls><source id="source" src="'+data[i]+'?dynamic='+Math.random()+'" type="audio/mpeg"/></audio>');
+						$('body').append('<audio numb="'+i+'" style="display: none;" controls><source id="source" src="'+data[i]+'?dynamic='+Math.random()+'" type="audio/mpeg"/></audio>');
 					}
 					$('audio').on('ended', function() {
-						alert(this);
-						console.log(this);
+						let numb = parseInt($(this).attr('numb'));
+						console.log(numb+1);
+						$('audio')[numb+1].play();
 					});
 					setTimeout(() => {
 						$('audio').get(0).play();

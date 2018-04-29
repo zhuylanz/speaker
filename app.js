@@ -50,8 +50,7 @@ app.post('/speak', (req, res) => {
 		encoding: 'binary'
 	}
 
-	// let accept_length = 2500;
-	let accept_length = 5;
+	let accept_length = 2500;
 	let text = req.body.text;
 	let text_total_part = parseInt(text.length/accept_length);
 	let modifier = 0;
@@ -97,4 +96,4 @@ app.post('/speak', (req, res) => {
 
 //
 app.use(express.static(__dirname+'/public'));
-server.listen(8004, () => console.log('ok'));
+server.listen(8004, () => console.log('Speaker Server is listening on 8004'));
