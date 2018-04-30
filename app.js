@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const rp = require('request-promise');
 const fs = require('fs');
 const path = require('path');
+const audioconcat = require('audioconcat');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,7 +57,7 @@ app.post('/speak', (req, res) => {
 	let modifier = 0;
 	let text_arr = [];
 	let option_arr = [];
-	let audio_path_arr = [];
+	let audio_path_write_arr = [];
 	let rp_arr = [];
 
 	text.length%accept_length ? text_total_part+=1 : text_total_part+=0;
@@ -83,15 +84,33 @@ app.post('/speak', (req, res) => {
 		for (var i in res_arr) {
 			console.log('--text converted');
 			let audio_path = '/audio/'+session_id+'_'+i+'.mp3';
-			fs.writeFileSync(__dirname+'/public'+audio_path, res_arr[i], 'binary');
-			audio_path_arr.push(audio_path);
+			let audio_path_write = __dirname+'/public'+audio_path;
+			fs.writeFileSync(audio_path_write, res_arr[i], 'binary');
+			audio_path_write_arr.push(audio_path_write);
 		}
-		res.send(audio_path_arr);
+		if (audio_path_write_arr.length == 1) {
+			fs.renameSync(audio_path_write_arr[0], './public/audio/'+session_id+'.mp3');
+			res.send(['/audio/'+session_id+'.mp3']);
+		} else {
+			audioconcat(audio_path_write_arr).concat('./public/audio/'+session_id+'.mp3')
+			.on('start', function (command) {
+				console.log('--audio merged: ' + session_id);
+			})
+			.on('error', function (err, stdout, stderr) {
+				console.error('-Error:', err);
+				console.error('-ffmpeg stderr:', stderr);
+			})
+			.on('end', function (output) {
+				for (var i in audio_path_write_arr) {
+					fs.unlink(audio_path_write_arr[i], err => { if(err) console.log('!unlink audio chunk err: ' + err) });
+				}
+				res.send(['/audio/'+session_id+'.mp3']);
+			});
+		}
+		
 	}).catch(err => {
 		console.log(err);
 	});
-	// console.log(audio_path_arr)
-	// res.send(audio_path_arr);
 });
 
 //
