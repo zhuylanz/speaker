@@ -89,10 +89,11 @@ app.post('/speak', (req, res) => {
 			audio_path_write_arr.push(audio_path_write);
 		}
 		if (audio_path_write_arr.length == 1) {
-			fs.renameSync(audio_path_write_arr[0], './public/audio/'+session_id+'.mp3');
+			console.log(__dirname);
+			fs.renameSync(audio_path_write_arr[0], __dirname+'/public/audio/'+session_id+'.mp3');
 			res.send(['/audio/'+session_id+'.mp3']);
 		} else {
-			audioconcat(audio_path_write_arr).concat('./public/audio/'+session_id+'.mp3')
+			audioconcat(audio_path_write_arr).concat(__dirname+'/public/audio/'+session_id+'.mp3')
 			.on('start', function (command) {
 				console.log('--audio merged: ' + session_id);
 			})
