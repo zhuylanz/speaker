@@ -51,6 +51,7 @@ app.post('/speak', (req, res) => {
 		encoding: 'binary'
 	}
 
+	let language = req.body.language; if (language == 'en') { option.qs.tl = 'en' }
 	let accept_length = 2500;
 	let text = req.body.text;
 	let text_total_part = parseInt(text.length/accept_length);

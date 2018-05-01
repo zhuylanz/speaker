@@ -6,6 +6,10 @@
 </head>
 <body>
 	<textarea style="width: 500px; height: 300px; overflow: auto; margin: auto;"></textarea>
+	<select>
+		<option>vi</option>
+		<option>en</option>
+	</select>
 	<input type="button" class="trigger" value="Speak" onclick="speakText()">
 	<script>
 		let speakText = function() {
@@ -13,7 +17,7 @@
 			$.ajax({
 				method: 'POST',
 				url: '/speak',
-				data: { text: text },
+				data: { text: text, language: $('select').val() },
 				success: async function(data) {
 					console.log(data);
 					$('audio').remove();
