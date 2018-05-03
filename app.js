@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 //SERVER CONFIG:
 let session_id;
-app.get('/', (req, res, next) => {
+app.use('/', (req, res, next) => {
 	if (req.cookies.session) {
 		session_id = req.cookies.session;
 		console.log('>>speaker-session[old]: ' + session_id);
@@ -27,6 +27,9 @@ app.get('/', (req, res, next) => {
 	}
 	next();
 });
+app.get('/test', (req, res) => {
+	res.send('testestest')
+})
 
 app.post('/speak', (req, res) => {
 	let option = {
