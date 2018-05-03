@@ -11,6 +11,7 @@
 		<option>en</option>
 	</select>
 	<input type="button" class="trigger" value="Speak" onclick="speakText()">
+	<input type="button" class="trigger" value="Clear" onclick="clearText()">
 	<script>
 		let speakText = function() {
 			let text = $('textarea').val();
@@ -37,6 +38,9 @@
 			});
 		}
 
+		let clearText = function() {
+			$('textarea').val('');
+		}
 	</script>
 </body>
 </html>
