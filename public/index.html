@@ -3,39 +3,48 @@
 <head>
 	<title>Nuhula Speaker</title>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<link href="style.css" rel="stylesheet">
 </head>
 <body>
-	<textarea style="width: 500px; height: 300px; overflow: auto; margin: auto;"></textarea>
-	<select>
-		<option>vi</option>
-		<option>en</option>
-	</select>
-	<input type="button" class="trigger" value="Speak" onclick="speakText()">
-	<input type="button" class="trigger" value="Clear" onclick="clearText()">
+	<h1>Nuhula Speaker</h1>
+	<br>
+	<textarea></textarea>
+	<br>
+	<div class="container input">
+		<select class="option">
+			<option>vi</option>
+			<option>en</option>
+		</select>
+		<input type="button" class="option" value="Clear" onclick="clearText()">
+		<br>
+		<input type="button" class="trigger" value="Speak" onclick="speakText()">
+	</div>
 	<script>
 		let speakText = function() {
 			let text = $('textarea').val();
-			$.ajax({
-				method: 'POST',
-				url: '/speak',
-				data: { text: text, language: $('select').val() },
-				success: async function(data) {
-					console.log(data);
-					$('audio').remove();
-					for (var i in data) {
-						$('body').append('<audio numb="'+i+'" style="display: none;" controls><source id="source" src="'+data[i]+'?dynamic='+Math.random()+'" type="audio/mpeg"/></audio>');
+			if (text) {
+				$.ajax({
+					method: 'POST',
+					url: '/speak',
+					data: { text: text, language: $('select').val() },
+					success: async function(data) {
+						console.log(data);
+						$('audio').remove();
+						for (var i in data) {
+							$('body').append('<audio numb="'+i+'" style="display: none;" controls><source id="source" src="'+data[i]+'?dynamic='+Math.random()+'" type="audio/mpeg"/></audio>');
+						}
+						$('audio').on('ended', function() {
+							let numb = parseInt($(this).attr('numb'));
+							console.log(numb+1);
+							$('audio')[numb+1].play();
+						});
+						setTimeout(() => {
+							$('audio').eq(0).show();
+							$('audio').get(0).play();
+						}, 500);
 					}
-					$('audio').on('ended', function() {
-						let numb = parseInt($(this).attr('numb'));
-						console.log(numb+1);
-						$('audio')[numb+1].play();
-					});
-					setTimeout(() => {
-						$('audio').eq(0).show();
-						$('audio').get(0).play();
-					}, 500);
-				}
-			});
+				});
+			}
 		}
 
 		let clearText = function() {
