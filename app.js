@@ -27,9 +27,6 @@ app.use('/', (req, res, next) => {
 	}
 	next();
 });
-app.get('/test', (req, res) => {
-	res.send('testestest')
-})
 
 app.post('/speak', (req, res) => {
 	let option = {
