@@ -9,6 +9,7 @@ const rp = require('request-promise');
 const fs = require('fs');
 const path = require('path');
 const audioconcat = require('audioconcat');
+const shell = require('shelljs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -89,12 +90,18 @@ app.post('/speak', (req, res) => {
 			fs.writeFileSync(audio_path_write, res_arr[i], 'binary');
 			audio_path_write_arr.push(audio_path_write);
 		}
+
+		let final_path_static = __dirname+'/public/audio/'+session_id+'.mp3';
+		let final_path_relative = '/audio/'+session_id+'.mp3';
+
 		if (audio_path_write_arr.length == 1) {
-			fs.renameSync(audio_path_write_arr[0], __dirname+'/public/audio/'+session_id+'.mp3');
-			res.send(['/audio/'+session_id+'.mp3']);
+			fs.renameSync(audio_path_write_arr[0], final_path_static);
+			// shell.exec('ffmpeg -i '+final_path_static+' -filter:a "volume=2" '+final_path_static+' -y', {silent:true});
+			res.send([final_path_relative]);
 		} else {
-			audioconcat(audio_path_write_arr).concat(__dirname+'/public/audio/'+session_id+'.mp3')
+			audioconcat(audio_path_write_arr).concat(final_path_static)
 			.on('start', function (command) {
+				console.log(command)
 				console.log('--audio merged: ' + session_id);
 			})
 			.on('error', function (err, stdout, stderr) {
@@ -105,7 +112,8 @@ app.post('/speak', (req, res) => {
 				for (var i in audio_path_write_arr) {
 					fs.unlink(audio_path_write_arr[i], err => { if(err) console.log('!unlink audio chunk err: ' + err) });
 				}
-				res.send(['/audio/'+session_id+'.mp3']);
+				// shell.exec('ffmpeg -i '+final_path_static+' -filter:a "volume=2" '+final_path_static+' -y', {silent:true});
+				res.send([final_path_relative]);
 			});
 		}
 		
